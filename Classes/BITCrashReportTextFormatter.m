@@ -348,7 +348,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
         processPath = report.processInfo.processPath;
         
         /* Remove username from the path */
-#if TARGET_IPHONE_SIMULATOR
+#if TARGET_OS_SIMULATOR
         if ([processPath length] > 0)
           processPath = [processPath stringByAbbreviatingWithTildeInPath];
         if ([processPath length] > 0 && [[processPath substringToIndex:1] isEqualToString:@"~"])
@@ -438,7 +438,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     NSString *foundSelector = nil;
 
     // search the registers value for the current arch
-#if TARGET_IPHONE_SIMULATOR
+#if TARGET_OS_SIMULATOR
     if (lp64) {
       foundSelector = [[self class] selectorForRegisterWithName:@"rsi" ofThread:crashed_thread report:report];
       if (foundSelector == NULL)
@@ -539,7 +539,15 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   
   /* Images. The iPhone crash report format sorts these in ascending order, by the base address */
   [text appendString: @"Binary Images:\n"];
+  NSMutableArray *addedImagesBaseAddresses = @[].mutableCopy;
   for (BITPLCrashReportBinaryImageInfo *imageInfo in [report.images sortedArrayUsingFunction: bit_binaryImageSort context: nil]) {
+    // Make sure we don't add duplicates
+    if ([addedImagesBaseAddresses containsObject:@(imageInfo.imageBaseAddress)]) {
+      continue;
+    } else {
+      [addedImagesBaseAddresses addObject:@(imageInfo.imageBaseAddress)];
+    }
+    
     NSString *uuid;
     /* Fetch the UUID if it exists */
     if (imageInfo.hasImageUUID)
@@ -569,19 +577,19 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     /* Remove username from the image path */
     NSString *imageName = @"";
     if (imageInfo.imageName && [imageInfo.imageName length] > 0) {
-#if TARGET_IPHONE_SIMULATOR
+#if TARGET_OS_SIMULATOR
       imageName = [imageInfo.imageName stringByAbbreviatingWithTildeInPath];
 #else
       imageName = imageInfo.imageName;
 #endif
     }
-#if TARGET_IPHONE_SIMULATOR
+#if TARGET_OS_SIMULATOR
     if ([imageName length] > 0 && [[imageName substringToIndex:1] isEqualToString:@"~"])
       imageName = [NSString stringWithFormat:@"/Users/USER%@", [imageName substringFromIndex:1]];
 #endif
     [text appendFormat: fmt,
      imageInfo.imageBaseAddress,
-     imageInfo.imageBaseAddress + (MAX(1, imageInfo.imageSize) - 1), // The Apple format uses an inclusive range
+     imageInfo.imageBaseAddress + (MAX(1U, imageInfo.imageSize) - 1), // The Apple format uses an inclusive range
      binaryDesignator,
      [imageInfo.imageName lastPathComponent],
      archName,
@@ -809,7 +817,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   
   /* Make sure UTF8/16 characters are handled correctly */
   NSInteger offset = 0;
-  NSInteger index = 0;
+  NSUInteger index = 0;
   for (index = 0; index < [imageName length]; index++) {
     NSRange range = [imageName rangeOfComposedCharacterSequenceAtIndex:index];
     if (range.length > 1) {
@@ -868,4 +876,4 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
 
 @end
 
-#endif
+#endif /* HOCKEYSDK_FEATURE_CRASH_REPORTER */

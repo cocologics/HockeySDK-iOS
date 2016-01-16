@@ -1,3 +1,53 @@
+## Version 3.8.5
+
+- [UPDATE] Some minor improvements to our documentation
+- [BUGFIX] Fix a crash where `appStoreReceiptURL` was accidentally accessed on iOS 6
+- [BUGFIX] Fix a warning when implementing `BITHockeyManagerDelegate`
+
+## Version 3.8.4
+
+- [BUGFIX] Fix a missing header in the `HockeySDK.h` umbrella
+- [BUGFIX] Fix several type comparison warnings
+
+## Version 3.8.3
+
+- [NEW] Adds new `appEnvironment` property to indicate the environment the app is running in. This replaces the old `isAppStoreEnvironment` which is now deprecated. We can now differentiate between apps installed via TestFlight or the AppStore
+- [NEW] Distributed zip file now also contains our documentation
+- [UPDATE] Prevent issues with duplicate symbols from PLCrashReporter
+- [UPDATE] Remove several typos in our documentation and improve instructions for use in extensions
+- [UPDATE] Add additional nil-checks before calling blocks
+- [UPDATE] Minor code readability improvements
+- [BUGFIX] `BITFeedbackManager`: Fix Feedback Annotations not working on iPhones running iOS 9
+- [BUGFIX] Switch back to using UIAlertView to prevent several issues. We will add a more robust solution which uses UIAlertController in a future update.
+- [BUGFIX] Fix several small issues in our CrashOnly builds
+- [BUGFIX] Minor fixes for memory leaks
+- [BUGFIX] Fix crashes because completion blocks were not properly dispatched on the main thread
+
+## Version 3.8.2
+
+- [UPDATE] Added support for Xcode 6.x 
+- [UPDATE] Requires iOS 7 or later as base SDK, deployment target iOS 6 or later
+- [UPDATE] Updated PLCrashReporter build to exclude Bitcode in Simulator slices
+
+## Version 3.8.1
+
+- [UPDATE] Updated PLCrashReporter build using Xcode 7 (7A220)
+
+## Version 3.8
+
+- [NEW] Added Bitcode support
+- [UPDATE] Requires Xcode 7 or later
+- [UPDATE] Requires iOS 9 or later as base SDK, deployment target iOS 6 or later
+- [UPDATE] Updated PLCrashReporter build using Xcode 7
+- [UPDATE] Use `UIAlertController` when available
+- [UPDATE] Added full support for `NSURLSession`
+- [UPDATE] Removed statusbar adjustment code (which isn't needed any longer)
+- [UPDATE] Removed kBITTextLabel... defines and use NSText.. instead
+- [UPDATE] Removed a few `#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_6_1` since iOS 7 or later is now required as base SDK
+- [BUGFIX] `BITFeedbackManager`: Fixed feedback compose view rotation issue
+- [BUGFIX] `BITFeedbackManager`: Fixed `Add Image` button not always presented centered
+- [BUGFIX] Additional minor fixes
+
 ## Version 3.8-RC.1
 
 - [UPDATE] Added full support for `NSURLSession`
@@ -8,7 +58,7 @@
 ## Version 3.8-Beta.1
 
 - [NEW] Added Bitcode support
-- [UPDATE] Requires Xcode 7 or later to build
+- [UPDATE] Requires Xcode 7 or later
 - [UPDATE] Requires iOS 7 or later as base SDK
 - [UPDATE] Silenced deprecation warnings for `NSURLConnection` calls, these will be refactored in a future update
 - [UPDATE] Removed statusbar adjustment code (which isn't needed any longer)

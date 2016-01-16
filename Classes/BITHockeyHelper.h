@@ -28,10 +28,10 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "HockeySDKEnums.h"
 
 /* NSString helpers */
 NSString *bit_URLEncodedString(NSString *inputString);
-NSString *bit_URLDecodedString(NSString *inputString);
 NSString *bit_base64String(NSData * data, unsigned long length);
 
 NSString *bit_settingsDir(void);
@@ -48,6 +48,9 @@ NSString *bit_UUID(void);
 NSString *bit_appAnonID(BOOL forceNewAnonID);
 BOOL bit_isPreiOS7Environment(void);
 BOOL bit_isPreiOS8Environment(void);
+BOOL bit_isAppStoreReceiptSandbox(void);
+BOOL bit_hasEmbeddedMobileProvision(void);
+BITEnvironment bit_currentAppEnvironment(void);
 BOOL bit_isRunningInAppExtension(void);
 
 #if !defined (HOCKEYSDK_CONFIGURATION_ReleaseCrashOnly) && !defined (HOCKEYSDK_CONFIGURATION_ReleaseCrashOnlyExtensions)

@@ -195,21 +195,23 @@
 }
 
 - (void)updateList {
-  CGSize contentSize = self.tableView.contentSize;
-  CGPoint contentOffset = self.tableView.contentOffset;
-  
-  [self refreshPreviewItems];
-  [self.tableView reloadData];
-  
-  if (contentSize.height > 0 &&
-      self.tableView.contentSize.height > self.tableView.frame.size.height &&
-      self.tableView.contentSize.height > contentSize.height &&
-      ![self isRefreshingWithNewControl])
-    [self.tableView setContentOffset:CGPointMake(contentOffset.x, self.tableView.contentSize.height - contentSize.height + contentOffset.y) animated:NO];
-  
-  [self stopLoadingIndicator];
-  
-  [self.tableView flashScrollIndicators];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    CGSize contentSize = self.tableView.contentSize;
+    CGPoint contentOffset = self.tableView.contentOffset;
+    
+    [self refreshPreviewItems];
+    [self.tableView reloadData];
+    
+    if (contentSize.height > 0 &&
+        self.tableView.contentSize.height > self.tableView.frame.size.height &&
+        self.tableView.contentSize.height > contentSize.height &&
+        ![self isRefreshingWithNewControl])
+      [self.tableView setContentOffset:CGPointMake(contentOffset.x, self.tableView.contentSize.height - contentSize.height + contentOffset.y) animated:NO];
+    
+    [self stopLoadingIndicator];
+    
+    [self.tableView flashScrollIndicators];
+  });
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -287,6 +289,7 @@
 }
 
 - (void)deleteAllMessagesAction:(id)sender {
+  /* We won't use this for now until we have a more robust solution for displaying UIAlertController
   // requires iOS 8
   id uialertcontrollerClass = NSClassFromString(@"UIAlertController");
   if (uialertcontrollerClass) {
@@ -324,6 +327,7 @@
     
     [self presentViewController:alertController animated:YES completion:nil];
   } else {
+   */
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
@@ -347,7 +351,7 @@
       [deleteAction show];
     }
 #pragma clang diagnostic pop
-  }
+  /*}*/
 }
 
 - (UIView*) viewForShowingActionSheetOnPhone {
@@ -826,6 +830,7 @@
 #pragma mark - BITAttributedLabelDelegate
 
 - (void)attributedLabel:(BITAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url {
+  /*
   // requires iOS 8
   id uialertcontrollerClass = NSClassFromString(@"UIAlertController");
   if (uialertcontrollerClass) {
@@ -865,6 +870,7 @@
     
     [self presentViewController:linkAction animated:YES completion:nil];
   } else {
+   */
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
@@ -889,7 +895,7 @@
       [linkAction show];
     }
 #pragma clang diagnostic pop
-  }
+  /*}*/
 }
 
 
@@ -956,7 +962,7 @@
   self.cachedPreviewItems = nil;
   NSMutableArray *collectedAttachments = [NSMutableArray new];
   
-  for (int i = 0; i < self.manager.numberOfMessages; i++) {
+  for (uint i = 0; i < self.manager.numberOfMessages; i++) {
     BITFeedbackMessage *message = [self.manager messageAtIndex:i];
     [collectedAttachments addObjectsFromArray:message.previewableAttachments];
   }
